@@ -44,10 +44,23 @@ public class UserService {
 
     public void delete (String userName){
         Optional<User> optionalUser = userRepository.findByUserName(userName);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()){
             throw new IllegalStateException("User " + userName + " does not exist.");
         }
         userRepository.deleteById(optionalUser.get().getId());
+    }
+
+    public User authenticationCheck (String userName, String pass){
+        Optional<User> optionalUser = userRepository.findByUserName(userName);
+        if (optionalUser.isEmpty()){
+            throw new IllegalStateException("User " + userName + " does not exist.");
+        }
+        else {
+            if (!optionalUser.get().getPassword().equals(pass)){
+                throw new IllegalStateException("Incorrect password");
+            }
+        }
+        return optionalUser.orElse(null);
     }
 
 

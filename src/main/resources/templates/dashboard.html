@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>Welcome, <span th:text="${user.name}"></span>!</h2>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Username: <span th:text="${user.userName}"></span></p>
+    <p>Age: <span th:text="${user.age}"></span></p>
+    <a href="/logout" class="btn">Logout</a>
+</div>
+</body>
+</html>
