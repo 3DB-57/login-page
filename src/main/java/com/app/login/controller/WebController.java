@@ -1,8 +1,13 @@
 package com.app.login.controller;
 
 import com.app.login.entity.User;
+import com.app.login.repository.UserRepository;
 import com.app.login.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +20,11 @@ import java.time.LocalDate;
 @Controller
 public class WebController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public WebController(UserService userService) {
+    public WebController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/")
@@ -31,28 +38,23 @@ public class WebController {
         return "register";
     }
 
-    @PostMapping("/login")
-    public String loginSubmit (
-            @RequestParam String userName,
-            @RequestParam String pass,
-            HttpSession session,
-            Model model){
-        try {
-            User user = userService.authenticationCheck(userName, pass);
-            session.setAttribute("user", user);
-            return "redirect:/dashboard";
-        } catch (Exception e){
-            model.addAttribute("error", e.getMessage());
-            return "login";
+    @GetMapping("/login")
+    public String loginForm(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Invalid username or password");
         }
+        return "login";
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
+    @PreAuthorize("isAuthenticated()")
+    public String dashboard(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         model.addAttribute("user", user);
         return "dashboard";
     }

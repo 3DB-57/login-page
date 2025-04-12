@@ -1,27 +1,117 @@
-.container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: #dc3545;
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+button[type="submit"] {
+    background: #667eea;
     color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin-top: 1rem;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background: #764ba2;
 }
 
 .alert {
     padding: 1rem;
+    border-radius: 5px;
     margin-bottom: 1rem;
-    border-radius: 4px;
 }
 
 .error {
-    background-color: #ffe3e6;
-    border: 1px solid #ff758c;
+    background-color: #ffebee;
+    border: 1px solid #ff5252;
+    color: #ff5252;
+}
+
+a {
+    color: #667eea;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: #667eea;
+    color: white;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #764ba2;
+    text-decoration: none;
+}
+
+/* Для dashboard */
+.user-info {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.user-info p {
+    margin: 0.5rem 0;
+    color: #444;
 }

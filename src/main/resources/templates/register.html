@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Registration</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 <div class="container">
@@ -14,7 +14,8 @@
     </div>
 
     <form th:action="@{/register}" method="post" th:object="${user}">
-        <input type="name" name="name" placeholder="Name" required>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <input type="text" name="name" placeholder="Name" required>
         <input type="text" name="userName" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
         <input type="email" name="email" placeholder="Email" required>
