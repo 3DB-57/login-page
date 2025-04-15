@@ -32,12 +32,14 @@ public class WebController {
         return "login";
     }
 
+    //страница регистрации
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
+    // страница входа
     @GetMapping("/login")
     public String loginForm(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
@@ -46,6 +48,7 @@ public class WebController {
         return "login";
     }
 
+    // страница пользователя
     @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")
     public String dashboard(Model model) {
@@ -59,12 +62,14 @@ public class WebController {
         return "dashboard";
     }
 
+    // logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
     }
 
+    // Регистрация и добавление пользователя в БД
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute User user, Model model) {
         try {

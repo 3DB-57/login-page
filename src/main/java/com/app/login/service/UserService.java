@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +19,12 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    // Валидация даты рождения
     private int checkAndSetAge (User user){
         int age = Period.between(user.getBirth(), LocalDate.now()).getYears();
         if (age < 16){
@@ -28,15 +33,12 @@ public class UserService implements UserDetailsService {
         return age;
     }
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
+    // Поиск всех пользователей в БД
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
+    //Создание пользователя
     public User create (User user) {
         Optional<User> optionalUser = userRepository.findByUserName(user.getUserName());
         Optional<User> emailCheck = userRepository.findByEmail(user.getEmail());
@@ -51,6 +53,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    // Удаление пользователя по username
     public void delete (String userName){
         Optional<User> optionalUser = userRepository.findByUserName(userName);
         if (optionalUser.isEmpty()){
@@ -59,6 +62,7 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(optionalUser.get().getId());
     }
 
+    // Логика входа
     public User authenticationCheck (String userName, String pass){
         Optional<User> optionalUser = userRepository.findByUserName(userName);
         if (optionalUser.isEmpty()){
@@ -72,10 +76,11 @@ public class UserService implements UserDetailsService {
         return optionalUser.orElse(null);
     }
 
+    //  Перегрузка UserDetails для загрузки пользователя
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User" + username + " does not exist."));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUserName(),

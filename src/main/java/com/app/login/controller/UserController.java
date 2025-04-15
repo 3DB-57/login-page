@@ -1,3 +1,4 @@
+// Для теста CRUD операций
 package com.app.login.controller;
 
 import com.app.login.entity.User;
