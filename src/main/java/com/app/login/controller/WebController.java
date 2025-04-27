@@ -10,10 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -69,6 +66,13 @@ public class WebController {
         return "redirect:/";
     }
 
+    @GetMapping("/admin/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminPanel(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "admin/users";
+    }
+
     // Регистрация и добавление пользователя в БД
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute User user, Model model) {
@@ -81,5 +85,12 @@ public class WebController {
             model.addAttribute("user", user);
             return "register";
         }
+    }
+
+    @DeleteMapping("/admin/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteUser(@PathVariable Long id) {
+        userService.deleteById(id);
+        return "redirect:/admin/users";
     }
 }

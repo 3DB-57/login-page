@@ -28,6 +28,8 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birth;
     private Integer age;
+    @Column(name = "role", nullable = false)
+    private String role = "USER";
 
 
     @Override

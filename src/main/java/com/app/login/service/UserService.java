@@ -2,6 +2,7 @@ package com.app.login.service;
 
 import com.app.login.entity.User;
 import com.app.login.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,13 +54,16 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    // Удаление пользователя по username
-    public void delete (String userName){
-        Optional<User> optionalUser = userRepository.findByUserName(userName);
-        if (optionalUser.isEmpty()){
-            throw new IllegalStateException("User " + userName + " does not exist.");
-        }
-        userRepository.deleteById(optionalUser.get().getId());
+    // Удаление пользователя по ID
+    public void deleteById (Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("ID: " + id + " does not exist."));
+        userRepository.deleteById(user.getId());
+    }
+
+    // Проверка существования по username
+    public boolean existsByUsername(String username) {
+        return userRepository.findByUserName(username).isPresent();
     }
 
     // Логика входа
@@ -82,10 +86,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User" + username + " does not exist."));
 
+        String authority = "ROLE_" + user.getRole();
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUserName(),
                 user.getPassword(),
-                Collections.emptyList()
+                List.of(new SimpleGrantedAuthority(authority))
         );
     }
 
